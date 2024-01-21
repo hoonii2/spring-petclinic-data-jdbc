@@ -19,34 +19,15 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: petclinic-app-log-storage
+              mountPath: /logs
+      volumes:
+        - name: petclinic-app-log-storage
+          persistentVolumeClaim:
+            claimName: petclinic-app-pvc
   strategy:
     blueGreen:
       activeService: petclinic-app-rollout-bluegreen-active
       previewService: petclinic-app-rollout-bluegreen-preview
       autoPromotionEnabled: false
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: petclinic-app-rollout-bluegreen-active
-spec:
-  selector:
-    app: petclinic-app-rollout-bluegreen
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: petclinic-app-rollout-bluegreen-preview
-spec:
-  selector:
-    app: petclinic-app-rollout-bluegreen
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080

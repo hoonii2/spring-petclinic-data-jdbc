@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: petclinic-app-rollout-bluegreen-active
+spec:
+  selector:
+    app: petclinic-app-rollout-bluegreen
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: petclinic-app-rollout-bluegreen-preview
+spec:
+  selector:
+    app: petclinic-app-rollout-bluegreen
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
