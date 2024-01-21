@@ -25,7 +25,7 @@ spec:
       volumes:
         - name: petclinic-app-log-storage
           persistentVolumeClaim:
-            claimName: petclinic-app-gcp-pvc
+            claimName: nfs-pvc
   strategy:
     blueGreen:
       activeService: petclinic-app-rollout-bluegreen-active
