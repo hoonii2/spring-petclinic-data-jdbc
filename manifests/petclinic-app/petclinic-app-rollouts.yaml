@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: petclinic-app-rollout-bluegreen
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: petclinic-app-rollout-bluegreen
+  template:
+    metadata:
+      labels:
+        app: petclinic-app-rollout-bluegreen
+    spec:
+      containers:
+        - name: petclinic-app
+          image: lkh66913/petclinic-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+  strategy:
+    blueGreen:
+      activeService: petclinic-app-rollout-bluegreen-active
+      previewService: petclinic-app-rollout-bluegreen-preview
+      autoPromotionEnabled: false
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: petclinic-app-rollout-bluegreen-active
+spec:
+  selector:
+    app: petclinic-app-rollout-bluegreen
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: petclinic-app-rollout-bluegreen-preview
+spec:
+  selector:
+    app: petclinic-app-rollout-bluegreen
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
