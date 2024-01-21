@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: petclinic-app
-          image: lkh66913/petclinic-app:latest
+          image: lkh66913/petclinic-app:20240121152653830
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
