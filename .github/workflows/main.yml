@@ -55,7 +55,7 @@ jobs:
         run: docker push lkh66913/petclinic-app:${{ steps.timestamp.outputs.timestamp }}
 
       - name: Update app version for blue/green upgrade
-        run: sed -i 's/petclinic-app:.*\$/petclinic-app:'${{ steps.timestamp.outputs.timestamp }}'/' manifests/petclinic-app/petclinic-app-rollouts.yaml
+        run: sed -i 's/petclinic-app:.*/petclinic-app:${{ steps.timestamp.outputs.timestamp }}/' manifests/petclinic-app/petclinic-app-rollouts.yaml
 
       - name: Commit version change
         run: |
