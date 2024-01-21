@@ -37,7 +37,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew build -x test
+          ./gradlew bootjar -x test
         shell: bash
         working-directory: ${{env.working-directory}}
 
