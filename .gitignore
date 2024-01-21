@@ -1,4 +1,6 @@
 target/*
+.obsidian/*
+.gradle/*
 .settings/*
 .classpath
 .project
