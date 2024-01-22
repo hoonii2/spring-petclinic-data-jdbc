@@ -13,6 +13,8 @@ spec:
       labels:
         app: petclinic-app-rollout-bluegreen
     spec:
+      securityContext:
+        runAsUser: 999
       containers:
         - name: petclinic-app
           image: lkh66913/petclinic-app:20240122053830685
