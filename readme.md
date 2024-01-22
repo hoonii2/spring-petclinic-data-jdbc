@@ -10,11 +10,13 @@
 
 2. 전체 아키텍처
     - GCP Google Kubernetes Engine 을 활용했습니다.
+
 ![image](https://github.com/hoonii2/spring-petclinic-data-jdbc/assets/17640541/1a19f22c-143a-4313-affc-bdceaa809a67)
 <br>
 
 3. CI/CD Flow
-![image](https://github.com/hoonii2/spring-petclinic-data-jdbc/assets/17640541/7ac0daf1-cc1b-4f94-9ed3-fd9f30b2d5a5)
+
+![image](https://github.com/hoonii2/spring-petclinic-data-jdbc/assets/17640541/61251a7b-b85a-4c1c-beb5-c3fb8b371d73)
 <br>
 
 
