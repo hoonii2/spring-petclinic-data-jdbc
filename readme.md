@@ -9,6 +9,7 @@
     <br>
 
 2. 전체 아키텍처
+    - GCP Google Kubernetes Engine 을 활용했습니다.
 ![image](https://github.com/hoonii2/spring-petclinic-data-jdbc/assets/17640541/1a19f22c-143a-4313-affc-bdceaa809a67)
 <br>
 
@@ -37,12 +38,7 @@
         2. petclinic-app 에서 PV 사용을 위해 Persistent Volume Claim 구성
             - 구성 정보 : [Persistent Volume Claim](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/storage/hostpath/petclinic-app-pvc.yaml)
             <br>
-        3. petclinic-app deployment 에서 PVC mount 및 Spring Boot 로깅 설정
-            - 구성 정보 : [Deployment]
-            - 실제 log 파일명은 Scale-out 을 고려하여 /logs/"${date} _ ${pod_name} 으로 구성
-                - 구성 정보 : [Dockerfile](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/Dockerfile)
-                <br>
-        4. read-only 이슈 정보 확인
+        3. read-only 이슈 정보 확인
             ``` shell
             #!Shell ( logging info )
 
