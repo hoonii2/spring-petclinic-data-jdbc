@@ -31,7 +31,7 @@ spec:
               mountPath: /logs
       containers:
         - name: petclinic-app
-          image: lkh66913/petclinic-app:20240122184710706
+          image: lkh66913/petclinic-app:20240122190204425
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
