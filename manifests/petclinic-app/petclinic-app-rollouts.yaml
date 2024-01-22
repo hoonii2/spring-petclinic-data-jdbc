@@ -32,6 +32,7 @@ spec:
         - name: petclinic-app-log-storage
           persistentVolumeClaim:
             claimName: nfs-pvc
+      terminationGracePeriodSeconds: 30
   strategy:
     blueGreen:
       activeService: petclinic-app-rollout-bluegreen-active
