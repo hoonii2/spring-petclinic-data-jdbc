@@ -14,9 +14,21 @@ spec:
         app: petclinic-app-rollout-bluegreen
     spec:
       securityContext:
+        runAsNonRoot: true
         runAsUser: 999
         runAsGroup: 999
         fsGroup: 999
+      initContainers:
+        - name: volume-chown
+          image: alpine:3
+          command:
+            - chown
+            - -R
+            - 999:999
+            - /logs
+          volumeMounts:
+            - name: petclinic-app-log-storage
+              mountPath: /logs
       containers:
         - name: petclinic-app
           image: lkh66913/petclinic-app:20240122053830685
@@ -27,7 +39,7 @@ spec:
             httpGet:
               path: /api/health
               port: 8080
-            initialDeplaySeconds: 30
+            initialDelaySeconds: 30
             periodSeconds: 10
           volumeMounts:
             - name: petclinic-app-log-storage
