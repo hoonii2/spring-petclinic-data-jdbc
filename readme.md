@@ -10,7 +10,7 @@
 
 2. 전체 아키텍처
     - GCP Google Kubernetes Engine 을 활용했습니다.
-
+   <br>
 ![image](https://github.com/hoonii2/spring-petclinic-data-jdbc/assets/17640541/1a19f22c-143a-4313-affc-bdceaa809a67)
 <br>
 
