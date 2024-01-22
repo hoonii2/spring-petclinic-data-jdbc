@@ -30,4 +30,4 @@ spec:
     blueGreen:
       activeService: petclinic-app-rollout-bluegreen-active
       previewService: petclinic-app-rollout-bluegreen-preview
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
