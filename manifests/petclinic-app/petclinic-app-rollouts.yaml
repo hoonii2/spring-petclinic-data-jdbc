@@ -19,6 +19,12 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDeplaySeconds: 30
+            periodSeconds: 10
           volumeMounts:
             - name: petclinic-app-log-storage
               mountPath: /logs
