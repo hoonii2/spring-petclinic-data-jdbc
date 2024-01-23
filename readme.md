@@ -60,7 +60,7 @@
             - 구성 정보 : [NFS Server](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/storage/gcp-nfs/nfs.yaml), [NFS PV](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/storage/gcp-nfs/nfs-pv.yaml), [NFS PVC](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/storage/gcp-nfs/nfs-pvc.yaml)
             <br>
         2. 위 PVC 를 활용하여 여러 Pod 에서 사용
-            - 구성 정보 : [petclinic-app](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L44-L50)
+            - 구성 정보 : [petclinic-app](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L46-L52)
             <br>
 
 2. 로깅 설정 관련 사항
@@ -76,13 +76,13 @@
     - /api/health GET 요청 시 "UP" 반환하는 API 구현
     <br>
 2. 10초 주기로 체크
-    - 구성 정보 : [petclinic-app livenessProbe](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L38-L43)
+    - 구성 정보 : [petclinic-app livenessProbe](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L37-L42)
     - GET 요청 후 200~300 정상 응답 체크하는 livenessProbe 사용
     <br>
 
 ### 4. 종료 시 30초 이내 프로세스 미종료 시 SIGKILL 강제 종료
 1. 30초 대기 후 강제 종료 구현
-    - 구성 정보 : [petclinic-app graceful termination](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L51)
+    - 구성 정보 : [petclinic-app graceful termination](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L53)
     - Pod 종료 요청 SIGTERM 이후 30초간 대기한 뒤 미종료시 SIGKILL 강제 종료
     <br>
 
@@ -95,10 +95,10 @@
 
 ### 6. 어플리케이션 프로세스 uid:999 실행
 1. securityContext 활용하여 계정 설정
-    - 구성 정보 : [petclinic-app securityContext](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L16-L19)
+    - 구성 정보 : [petclinic-app securityContext](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L15-L19)
     <br>
 2. initContainer 를 활용하여 로깅 볼륨 소유자 설정
-    - 구성 정보 : [petclinic-app initContainer](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L21-L31)
+    - 구성 정보 : [petclinic-app initContainer](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-rollouts.yaml#L20-L30)
     - fsGroup 으로 소유그룹 변경했으나 마운트 볼륨이 mod 755 로 소유자만 write 가능하여 initContainer 를 활용하여 소유자 변경
     1. Mount volume directory 소유자 확인
         ``` shell
@@ -178,5 +178,38 @@
     <br>
 
 2. Argo CD 구성
-    - 구성 정보 : 항목 5 를 통해 Argo CD 접근 가능
+    - 구성 정보 : [항목 5](https://github.com/hoonii2/spring-petclinic-data-jdbc?tab=readme-ov-file#5-%EB%B0%B0%ED%8F%AC-%EC%8B%9C-scale-in-out-%EC%8B%9C-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%9C%A0%EC%8B%A4-%EA%B8%88%EC%A7%80) 를 통해 Argo CD 접근 가능
     1. rollout.yaml 의 버전 내용 업데이트 시 자동 blue/green 배포 수행
+    <br>
+
+3. HPA 구성
+    - 구성 정보 : [petclinic-app-hpa.yaml](https://github.com/hoonii2/spring-petclinic-data-jdbc/blob/master/manifests/petclinic-app/petclinic-app-hpa.yaml)
+    - petclinic-app request cpu 100m core 중 70% 초과 시 scale-out, 이후 안정화 시 자동 scale-in
+    - 동작 테스트
+        - 정상 상태
+            ``` shell
+            $ kubectl get pods | grep petclinic
+            petclinic-app-rollout-bluegreen-c7b4765fc-dhfs4   1/1     Running   0          53m
+            petclinic-app-rollout-bluegreen-c7b4765fc-lkl9s   1/1     Running   0          104s
+
+            $ kubectl get hpa
+            NAME                REFERENCE                                 TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+            petclinic-app-hpa   Rollout/petclinic-app-rollout-bluegreen   7%/70%    2         4         2          81m
+            ```
+            <br>
+        - Apache JMeter 트래픽 발생 ( 24s 10,000 request )
+            <br>
+            ![image](https://github.com/hoonii2/spring-petclinic-data-jdbc/assets/17640541/093a48d4-160e-447e-9e1e-195bd17da6af)
+            
+        - HPA 동작 확인 ( max to 4 replica )
+            ``` shell
+            $ kubectl get pods | grep petclinic
+            petclinic-app-rollout-bluegreen-c7b4765fc-dhfs4   1/1     Running           0          54m
+            petclinic-app-rollout-bluegreen-c7b4765fc-lkl9s   1/1     Running           0          3m3s
+            petclinic-app-rollout-bluegreen-c7b4765fc-w77nq   0/1     PodInitializing   0          3s
+            petclinic-app-rollout-bluegreen-c7b4765fc-z4nrq   0/1     PodInitializing   0          3s
+
+            $ kubectl get hpa
+            NAME                REFERENCE                                 TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+            petclinic-app-hpa   Rollout/petclinic-app-rollout-bluegreen   208%/70%   2         4         4          83m
+            ```
