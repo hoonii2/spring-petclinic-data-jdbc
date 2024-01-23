@@ -3,7 +3,6 @@ kind: Rollout
 metadata:
   name: petclinic-app-rollout-bluegreen
 spec:
-  replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
